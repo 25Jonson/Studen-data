@@ -21,9 +21,8 @@ public class fibo {
 
         switch (n) {
             case 0:
-                return n;
+                return 0;
             case 1:
-                arrFibo[n] = 1;
                 return 1;
             default:
                 arrFibo[n] = fib(n - 1, arrFibo) + fib(n - 2, arrFibo);
