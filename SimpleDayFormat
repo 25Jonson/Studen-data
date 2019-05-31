@@ -1,0 +1,2 @@
+SimpleDateFormat f = new SimpleDateFormat("dd-MM-YYYY HH:mm:ss");
+        System.out.println(f.format(new Date()));
