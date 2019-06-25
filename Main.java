@@ -1,94 +1,44 @@
 
-import java.text.NumberFormat;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
 
+// Java program to calculate MD5 hash value 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
-        BSTree t = new BSTree();
-        Validate v = new Validate();
-        while (true) {
-            displayMenu();
-            int choice = v.checkchoice("Your Choice: ");
-            switch (choice) {
-                case 1:
-                    t.loadFile("book.txt");
-                    System.out.println("Code  |  Title      |  Quantity     |  Lended  |  Price   | Value   ");
-                    t.display();
-                    break;
-                case 2:
-                    t.insert();
-                    t.bal();
-                    break;
-                case 3:
-                    t.inOrder(t.root);
-                    break;
-                case 4:
-                    t.breadth(t.root);
-                    break;
-                case 5:
-                    t.inOrderToFile(t.root);
-                    t.inOrder(t.root);
-                    break;
-                case 6:
-                    String xbcode = "5";
-                    t.search(t.root, xbcode);
-                    break;
-                case 7:
-                    String xcode = "2";
-                    t.deleByCopy(xcode);
-                    break;
-                case 8:
-                    t.balance();
-                    break;
-                case 9:
-                    t.count(t.root);
-                    break;
-                case 11:
-                    t.loadFile("book.txt");
-                    System.out.println("Code  |  Title      |  Quantity     |  Lended  |  Price   | Value   ");
-                    t.display();
-                    break;
-                case 12:
-                    Book b = new Book("5", "X", 2, 1, 1);
-                    t.insert(b);
-                    t.breadth(t.root);
-                    t.display();
-                    break;
-                case 13:
-                    String a = "4";
-                    t.search(t.root, a);
-                    t.breadth(t.root);
-                    break;
-                case 14:
-                    String c = "6";
-                    t.deleByCopy(c);
-                    t.breadth(t.root);
-                    t.display();
-                    break;
-                case 0:
-                    System.exit(0);
-                    break;
+    public static String getMd5(String input) {
+        try {
+
+            // Static getInstance method is called with hashing MD5 
+            MessageDigest md = MessageDigest.getInstance("MD5");
+
+            // digest() method is called to calculate message digest 
+            //  of an input digest() return array of byte 
+            byte[] messageDigest = md.digest(input.getBytes());
+
+            // Convert byte array into signum representation 
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            // Convert message digest into hex value 
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
             }
+            return hashtext;
+        } // For specifying wrong message digest algorithms 
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static void displayMenu() {
-        System.out.println("Book list:\n"
-                + "1.1.      Load data from file\n"
-                + "1.2.      Input & insert data\n"
-                + "1.3.      In-order traverse\n"
-                + "1.4.      Breadth-first traverse\n"
-                + "1.5.      In-order traverse to file\n"
-                + "1.6.      Search by bcode\n"
-                + "1.7.      Delete by bcode by copying\n"
-                + "1.8.      Simply balancing\n"
-                + "1.9.      Count number of books\n"
-                + "1.11.     Count number of books\n"
-                + "1.12.     Insert\n"
-                + "1.13.     Search\n"
-                + "1.14.     Delete\n"
-                + "1.15.     Balance\n"
-        );
+    // Driver code 
+    public static void main(String args[]) throws NoSuchAlgorithmException {
+        GenericLogin gl = new GenericLogin();
+        Scanner sc = new Scanner(System.in);
+        Validate v = new Validate();
 
+        gl.add();
+        gl.display();
     }
 }
