@@ -1,4 +1,5 @@
 
+
 import java.util.Scanner;
 
 public class Validator {
@@ -97,3 +98,4 @@ public class Validator {
     }
 
 }
+
