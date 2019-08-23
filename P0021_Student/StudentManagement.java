@@ -1,5 +1,6 @@
 
 import com.sun.xml.internal.ws.api.ha.StickyFeature;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +26,7 @@ public class StudentManagement {
     }
 
     //add information of stundet
-    public void add() {
+    public void add() throws IOException {
         Scanner in = new Scanner(System.in);
         boolean addMore = false;
         do {
@@ -34,13 +35,17 @@ public class StudentManagement {
                 String id = v.checkString("");
                 System.out.println("Enter name: ");
                 String name = v.checkString("");
-//                do {
-//                    if (!(listStudent.get(checkDupplicate(id)).getName().equalsIgnoreCase(name))) {
-//                        System.out.printf("ID [%s] had existed with name [%s], enter again:",
-//                                 listStudent.get(checkDupplicate(id)).getId(), listStudent.get(checkDupplicate(id)).getName());
-//                        name = v.checkString("");
-//                    }
-//                } while (!listStudent.get(checkDupplicate(id)).getName().equalsIgnoreCase(name));
+                do {
+                    if (checkDupplicate(id, name) != -1) {
+                        System.out.printf("ID [%s] is existed with Name [%s], please Enter again!\n",
+                                listStudent.get(checkDupplicate(id, name)).getId(),
+                                listStudent.get(checkDupplicate(id, name)).getName());
+                        System.out.println("Enter ID:");
+                        id = v.checkString("");
+                        System.out.println("Enter name: ");
+                        name = v.checkString("");
+                    }
+                } while (checkDupplicate(id, name) != -1);
                 System.out.println("Enter course: ");
                 String course = v.checkString("");
                 do {
@@ -57,16 +62,36 @@ public class StudentManagement {
                 } else {
                     System.out.println("Student had existed in data, please enter again:\n");
                 }
-            } while (listStudent.size() <= 4);
-
-            System.out.println("Do you want to continue (Y/N)? Choose Y to continue, N to return main screen");
-            String number = in.next();
-            if (number.equalsIgnoreCase("y")) {
-                addMore = true;
-            }
+            } while (listStudent.size() < 3);
+            addMore = ynVal();
         } while (addMore == true);
     }
 
+    //VALIDATE Y/N QUESTION
+    public boolean ynVal() throws IOException {
+        Scanner in = new Scanner(System.in);
+        boolean ynCheck;
+        boolean addMore = false;
+        do {
+            System.out.print("Do you want to continue (Y/N) ? ");
+            String check = v.checkString("");
+            if (check.equalsIgnoreCase("y")) {          //if y then return to adding student
+                ynCheck = true;
+                addMore = true;
+            } else if (check.equalsIgnoreCase("n")) {   //if n then end the function
+                ynCheck = true;
+                addMore = false;
+                System.out.println();
+            } else {
+                System.out.println("Wrong input. Please enter Y or N only");
+                ynCheck = false;
+            }
+        } while (ynCheck == false);
+        return addMore;
+    }
+
+    // 1 student only had 1 kind of course in 1 semester
+    // Other hand, 1 student can learn all course in 1 semester
     public boolean checkSameInfo(String checkId, int checkSemester, String checkCourse) {
         boolean sameInfor = false;
         for (int i = 0; i < listStudent.size(); i++) {
@@ -80,13 +105,13 @@ public class StudentManagement {
         return sameInfor;
     }
 
-    public int checkDupplicate(String check) {
+    public int checkDupplicate(String checkId, String checkName) {
         int n = listStudent.size();
         int Ret = -1;
         boolean find = false;
         for (int i = 0; i < n; i++) {
             Student s = listStudent.get(i);
-            if (s.getId().equalsIgnoreCase(check)) {
+            if (s.getId().equalsIgnoreCase(checkId) && !s.getName().equalsIgnoreCase(checkName)) {
                 find = true;
                 Ret = i;
                 break;
@@ -100,19 +125,18 @@ public class StudentManagement {
         System.out.printf("%-20s%-20s%-10s%-10s\n", "ID", "Name", "Course", "Semester");
         for (int i = 0; i < n; i++) {
             Student s = listStudent.get(i);
-            toString();
+            System.out.printf("%-20s%-20s%-10s%-10s\n", s.getId(), s.getName(), s.getCourse(), s.getSemester());
         }
     }
 
     public void search(String name) {
         int n = listStudent.size();
         boolean find = false;
-
+        System.out.printf("%-20s%-20s%-10s%-10s\n", "ID", "Name", "Course", "Semester");
         for (int i = 0; i < n; i++) {
             Student s = listStudent.get(i);
             if (s.getName().equalsIgnoreCase(name)) {
                 find = true;
-                System.out.printf("%-20s%-20s%-10s%-10s\n", "ID", "Name", "Course", "Semester");
                 System.out.printf("%-10s%-20s%-10s%-10d\n", s.getId(), s.getName(), s.getCourse(), s.getSemester());;
                 Comparator<Student> nameSort = new Comparator<Student>() {
                     @Override
@@ -127,22 +151,25 @@ public class StudentManagement {
         }
     }
 
-    public void delete(String removeById) {
+    public void deleteById(String remove) {
         boolean find = false;
-        if (checkDupplicate(removeById) != -1) {
-            find = true;
-            listStudent.remove(checkDupplicate(removeById));
+        for (int i = 0; i < listStudent.size(); i++) {
+            if (listStudent.get(i).getId().equalsIgnoreCase(remove)) {
+                find = true;
+                listStudent.remove(i);
+                System.out.printf("Delete id: [%s] is Successfull!", remove);
+            }
         }
         if (find == false) {
             System.out.println("Data is not exists so it is not delete");
         }
     }
 
-    public void update(String updateById) {
+    public void updateById(String update) {
         Scanner sc = new Scanner(System.in);
         boolean find = false;
         for (int i = 0; i < listStudent.size(); i++) {
-            if (listStudent.get(i).getId().equals(updateById)) {
+            if (listStudent.get(i).getId().equals(update)) {
                 find = true;
                 System.out.println("Enter new name: ");
                 String newName = v.checkString2("");
@@ -171,6 +198,7 @@ public class StudentManagement {
     }
 
     public void report() {
+        System.out.println("========== Report Student ============");
         for (int i = 0; i < listStudent.size(); i++) {
             StudentReport sr = new StudentReport();
             sr.setId(listStudent.get(i).getId());
@@ -193,4 +221,72 @@ public class StudentManagement {
         }
     }
 
+    //---------REPORT---------//
+    public void report2() {
+        boolean dupPer;
+        System.out.println("-----------Report-----------");
+        ArrayList<StudentReport> reportList = new ArrayList<>();
+        //calculate total course
+        for (int i = 0; i < listStudent.size(); i++) {
+            StudentReport x = new StudentReport();
+            x.setId(listStudent.get(i).getId());
+            dupPer = checkRPList(x.getId(), reportList); //check if the id is already exist in report list
+            if (dupPer == false) { //if that id is completely new the add it
+                x.setName(listStudent.get(i).getName());
+                x.setCourse(listStudent.get(i).getCourse());
+                x.setSemester(listStudent.get(i).getSemester());
+                x.setTotalJava(0);
+                x.setTotalNet(0);
+                x.setTotalC(0);
+                if (x.getCourse().equalsIgnoreCase("Java") == true) {
+                    x.setTotalJava(x.getTotalJava() + 1);
+                } else if (x.getCourse().equalsIgnoreCase(".Net") == true) {
+                    x.setTotalNet(x.getTotalNet() + 1);
+                } else {
+                    x.setTotalC(x.getTotalC() + 1);
+                }
+                reportList.add(x);
+            } else { //if not then update the total count
+                x.setCourse(listStudent.get(i).getCourse());
+                for (int j = 0; j < reportList.size(); j++) {
+                    if (x.getId().equalsIgnoreCase(reportList.get(j).getId()) == true) {
+                        if (x.getCourse().equalsIgnoreCase("Java") == true) {
+                            reportList.get(j).setTotalJava(reportList.get(j).getTotalJava() + 1);
+                            break;
+                        } else if (x.getCourse().equalsIgnoreCase(".Net") == true) {
+                            reportList.get(j).setTotalNet(reportList.get(j).getTotalNet() + 1);
+                            break;
+                        } else {
+                            reportList.get(j).setTotalC(reportList.get(j).getTotalC() + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        //print out result
+        for (int i = 0; i < reportList.size(); i++) {
+            System.out.println("Student: " + reportList.get(i).getName());
+            System.out.println("Java: " + reportList.get(i).getTotalJava());
+            System.out.println(".Net: " + reportList.get(i).getTotalNet());
+            System.out.println("C/C++: " + reportList.get(i).getTotalC());
+            System.out.println();
+        }
+    }
+
+    //CHECK FOR SAME PERSON IN REPORT LIST
+    public boolean checkRPList(String id, ArrayList<StudentReport> reportList) {
+        boolean dupPer = false;
+        for (int i = 0; i < reportList.size(); i++) {
+            if (id.equalsIgnoreCase(reportList.get(i).getId()) == true) {
+                dupPer = true;
+                break;
+            } else {
+                dupPer = false;
+            }
+        }
+        return dupPer;
+    }
+
 }
+
