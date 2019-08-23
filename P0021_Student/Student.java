@@ -52,10 +52,4 @@ public class Student implements Comparable<Student> {
     public int compareTo(Student t) {
         return this.name.compareToIgnoreCase(t.name);
     }
-
-    @Override
-    public String toString() {
-        return String.format("%-10s%-20s%-10s%-10d\n",getId(),getName(),getCourse(),getSemester());
-    }
-
 }
