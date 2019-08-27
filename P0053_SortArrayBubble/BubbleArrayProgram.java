@@ -8,7 +8,7 @@ public class BubbleArrayProgram {
     public static void main(String[] args) throws IOException {
         BubbleArray b = new BubbleArray();
         Scanner sc = new Scanner(System.in);
-        int numberArray[] = null;
+        double numberArray[] = null;
 
         Validator v = new Validator();
         while (true) {
