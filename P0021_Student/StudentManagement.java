@@ -26,7 +26,7 @@ public class StudentManagement {
     }
 
     //add information of stundet
-    public void add() throws IOException {
+    public void create() throws IOException  {
         Scanner in = new Scanner(System.in);
         boolean addMore = false;
         do {
@@ -74,7 +74,7 @@ public class StudentManagement {
         boolean addMore = false;
         do {
             System.out.print("Do you want to continue (Y/N) ? ");
-            String check = v.checkString("");
+            String check = in.next();
             if (check.equalsIgnoreCase("y")) {          //if y then return to adding student
                 ynCheck = true;
                 addMore = true;
