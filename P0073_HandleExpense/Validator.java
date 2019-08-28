@@ -80,41 +80,23 @@ public class Validator {
         return a;
     }
 
-    public String checkDate(String message) {
-        String a;
-        while (true) {
+       //check nhap date dung format
+    public String getDates() {
+        Scanner sc = new Scanner(System.in);
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MMM-yyyy");
+        dateFormat1.setLenient(false); 
+        Date date;
+        do{
             try {
-                System.out.print(message);
-                a = sc.nextLine();
-                Pattern pattern = Pattern.compile("\\d{1,2}[-][Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec][-]\\d{4}");
-                if (a == null) {
-                    System.out.println("Please input follow tyle: 12-Jan-2000");
-                } else if (Integer.parseInt(a.trim().substring(0, 1)) > 31) {
-                    System.out.println("Date must be in range 1 to 31");} else {
-                    break;
-                }
-            } catch (NullPointerException e) {
-                System.out.println("Please don't input space!");
+                System.out.print("Enter date: ");
+                date = dateFormat1.parse(sc.nextLine());
+            } catch (Exception e){
+                System.out.print("Please enter valid date\n");
+                continue;
             }
-        }
-        return a;
-    }
-
-    public boolean checkSpecialYear(String year) {
-        int checkYear = Integer.parseInt(year.substring(7));
-        boolean result = false;
-        if (checkYear % 4 == 0) {
-            if (checkYear % 100 == 0) {
-                if (checkYear % 400 == 0) {
-//                    System.out.println("This is năm nhuận");
-                    result = true;
-                }
-            } else {
-                result = true;
-//                System.out.println("This is năm nhuận");
-            }
-        }
-        return result;
+            break;
+        }while(true);
+        return dateFormat1.format(date);
     }
 
 }
