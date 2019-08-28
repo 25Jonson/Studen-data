@@ -19,8 +19,7 @@ public class ExpenseManagement {
         if (checkIsExis(id) != -1) {
             id++;
         }
-        System.out.print("Enter Date: ");
-        String date = v.checkString("");
+        String date = v.getDate();
 
         System.out.println("Enter amount of money: ");
         double money = v.checkDouble("");
